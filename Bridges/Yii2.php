@@ -116,7 +116,7 @@ class Yii2 implements BridgeInterface
 	    /**
      * {@inheritdoc}
      */
-    public function handle(ServerRequestInterface $request): ResponseInterface
+    public function handle(Psr\Http\Message\ServerRequestInterface $request): ResponseInterface
     {
         if (null === $this->application) {
             // internal server error
