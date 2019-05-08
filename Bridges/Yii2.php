@@ -23,8 +23,9 @@ class Yii2 implements BridgeInterface
     /**
      * @param string $appBootstrap
      * @param string $appenv
+     * @param boolean $debug
      */
-    public function bootstrap($appBootstrap, $appenv, $debug, LoopInterface $loop)
+    public function bootstrap($appBootstrap, $appenv, $debug)
     {
         /* @var $bootstrap \PHPPM\Bootstraps\Yii2 */
         $bootstrap = new \PHPPM\Bootstraps\Yii2($appenv);
