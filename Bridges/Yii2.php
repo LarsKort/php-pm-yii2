@@ -112,4 +112,36 @@ class Yii2 implements BridgeInterface
         $reactResponse->writeHead($zfResponse->getStatusCode(), $headers);
         $reactResponse->end($zfResponse->getContent());
     }
+	
+	    /**
+     * {@inheritdoc}
+     */
+    public function handle(ServerRequestInterface $request): ResponseInterface
+    {
+        if (null === $this->application) {
+            // internal server error
+            return new Psr7\Response(500, ['Content-type' => 'text/plain'], 'Application not configured during bootstrap');
+        }
+        $syRequest = $this->mapRequest($request);
+        // start buffering the output, so cgi is not sending any http headers
+        // this is necessary because it would break session handling since
+        // headers_sent() returns true if any unbuffered output reaches cgi stdout.
+        ob_start();
+        if ($this->bootstrap instanceof HooksInterface) {
+            $this->bootstrap->preHandle($this->application);
+        }
+        $syResponse = $this->application->handle($syRequest);
+        $out = ob_get_clean();
+        $response = $this->mapResponse($syResponse, $out);
+        if ($this->application instanceof TerminableInterface) {
+            $this->application->terminate($syRequest, $syResponse);
+        }
+        if ($this->application instanceof Kernel) {
+            $this->application->terminate($syRequest, $syResponse);
+        }
+        if ($this->bootstrap instanceof HooksInterface) {
+            $this->bootstrap->postHandle($this->application);
+        }
+        return $response;
+    }
 }
