@@ -12,6 +12,7 @@ use Zend\Mvc\MvcEvent;
 use Zend\Mvc\SendResponseListener;
 use Zend\Mvc\ResponseSender\SendResponseEvent;
 use React\EventLoop\LoopInterface;
+use PHPPM\Bridges\Psr\Http\Message\ServerRequestInterface;
 
 class Yii2 implements BridgeInterface
 {
@@ -116,7 +117,7 @@ class Yii2 implements BridgeInterface
 	    /**
      * {@inheritdoc}
      */
-    public function handle(Psr\Http\Message\ServerRequestInterface $request): ResponseInterface
+    public function handle(ServerRequestInterface $request): ResponseInterface
     {
         if (null === $this->application) {
             // internal server error
